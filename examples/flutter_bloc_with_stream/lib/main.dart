@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_with_stream/bloc/message_bloc.dart';
 import 'package:flutter_bloc_with_stream/bloc/ticker_bloc.dart';
+import 'package:flutter_bloc_with_stream/message/message.dart';
 import 'package:flutter_bloc_with_stream/ticker/ticker.dart';
 
 void main() => runApp(TickerApp());
@@ -21,6 +23,15 @@ class TickerApp extends MaterialApp {
             child: TickerPage(),
           ),
         );
+}
+
+// ignore: public_member_api_docs
+class MessageApp extends MaterialApp {
+  MessageApp({Key? key})
+      : super(
+            key: key,
+            home: BlocProvider(
+                create: (_) => MessageBloc(Message()), child: MessagePage()));
 }
 
 /// [StatelessWidget] which consumes a [TickerBloc]
@@ -52,5 +63,25 @@ class TickerPage extends StatelessWidget {
         child: const Icon(Icons.timer),
       ),
     );
+  }
+}
+
+class MessagePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Message with BLoC pattern"),
+        ),
+        body: BlocBuilder<MessageBloc, MessageState>(
+          builder: (context, state) {
+            if (state is MessageSuccess) {
+              return Center(child: Text(state.msg));
+            }
+            return const Center(
+              child: Text("Message sending"),
+            );
+          },
+        ));
   }
 }
